@@ -66,6 +66,10 @@
                     // Logic to download audio
                     const audioUrl = `https://www.youtube.com/watch?v=${videoId}`;
                     downloadFile(audioUrl, `${videoId}.mp3`);
+                } else if (type === 'document') {
+                    // Logic to download document
+                    const documentUrl = `https://www.youtube.com/watch?v=${videoId}`;
+                    downloadFile(documentUrl, `${videoId}.pdf`);
                 }
                 player.loadVideoById(videoId);
             } else {
@@ -81,7 +85,7 @@
      YouTube Video/Audio Downloader
     </h1>
     <p class="text-gray-600">
-     Paste your YouTube link below to download video or audio
+     Paste your YouTube link below to download video, audio, or document
     </p>
    </header>
    <main class="bg-white p-6 rounded-lg shadow-lg">
@@ -101,6 +105,11 @@
       <i class="fas fa-music">
       </i>
       Download Audio
+     </button>
+     <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50" onclick="handleDownload('document')">
+      <i class="fas fa-file-alt">
+      </i>
+      Download Document
      </button>
     </div>
     <div class="w-full flex justify-center" id="player">
