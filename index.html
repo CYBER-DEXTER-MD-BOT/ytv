@@ -1,0 +1,112 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   YouTube Video/Audio Downloader
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <script src="https://www.youtube.com/iframe_api">
+  </script>
+  <script>
+   var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '390',
+                width: '640',
+                videoId: '',
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // Player is ready
+        }
+
+        function onPlayerStateChange(event) {
+            // Player state changed
+        }
+
+        function fetchVideoDetails(videoId) {
+            fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=AIzaSyCMaxHj34zs_wdIEJPXX6hwR0Q2_RDCxCw`)
+                .then(response => response.json())
+                .then(data => console.log(data));
+        }
+
+        function downloadFile(url, filename) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function extractVideoId(url) {
+            const urlObj = new URL(url);
+            return urlObj.searchParams.get('v') || urlObj.pathname.split('/').pop();
+        }
+
+        function handleDownload(type) {
+            const url = document.getElementById('yt-link').value;
+            const videoId = extractVideoId(url);
+            if (videoId) {
+                fetchVideoDetails(videoId);
+                if (type === 'video') {
+                    // Logic to download video
+                    const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+                    downloadFile(videoUrl, `${videoId}.mp4`);
+                } else if (type === 'audio') {
+                    // Logic to download audio
+                    const audioUrl = `https://www.youtube.com/watch?v=${videoId}`;
+                    downloadFile(audioUrl, `${videoId}.mp3`);
+                }
+                player.loadVideoById(videoId);
+            } else {
+                alert('Please enter a valid YouTube link');
+            }
+        }
+  </script>
+ </head>
+ <body class="bg-gray-100 font-roboto">
+  <div class="container mx-auto p-4">
+   <header class="text-center mb-8">
+    <h1 class="text-4xl font-bold text-gray-800">
+     YouTube Video/Audio Downloader
+    </h1>
+    <p class="text-gray-600">
+     Paste your YouTube link below to download video or audio
+    </p>
+   </header>
+   <main class="bg-white p-6 rounded-lg shadow-lg">
+    <div class="mb-4">
+     <label class="block text-gray-700 font-bold mb-2" for="yt-link">
+      YouTube Link:
+     </label>
+     <input class="w-full p-2 border border-gray-300 rounded" id="yt-link" placeholder="Enter YouTube link here" type="text"/>
+    </div>
+    <div class="flex justify-center space-x-4 mb-4">
+     <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" onclick="handleDownload('video')">
+      <i class="fas fa-video">
+      </i>
+      Download Video
+     </button>
+     <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50" onclick="handleDownload('audio')">
+      <i class="fas fa-music">
+      </i>
+      Download Audio
+     </button>
+    </div>
+    <div class="w-full flex justify-center" id="player">
+     <div id="player"></div>
+    </div>
+   </main>
+  </div>
+ </body>
+</html>
